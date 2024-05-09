@@ -1,0 +1,68 @@
+name: Telegram Notifications
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, reopened, closed]
+  issues:
+    types: [opened, edited, closed]
+  watch:
+    types: [started]
+  release:
+    types: [published]
+  schedule:
+    - cron: '0 0 * * *' # Daily cron job
+
+jobs:
+  send_notifications:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Notification on Push
+        if: github.event_name == 'push'
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "New commit pushed to the repository!"
+      
+      - name: Send Telegram Notification on Pull Request
+        if: github.event_name == 'pull_request'
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "Pull request ${{ github.event.action }} by ${{ github.actor }}."
+
+      - name: Send Telegram Notification on Issue
+        if: github.event_name == 'issues'
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "Issue ${{ github.event.action }} by ${{ github.actor }}."
+
+      - name: Send Telegram Notification on Watch
+        if: github.event_name == 'watch'
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "Repository starred by ${{ github.actor }}."
+
+      - name: Send Telegram Notification on Release
+        if: github.event_name == 'release'
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "New release published: ${{ github.event.release.tag_name }}."
+
+      - name: Send Daily Telegram Notification
+        if: github.event_name == 'schedule'
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: "This is a daily notification from the GitHub Actions schedule."
