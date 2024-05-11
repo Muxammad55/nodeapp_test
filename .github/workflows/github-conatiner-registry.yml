@@ -1,0 +1,25 @@
+name: Git hub conatiner registry
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.USERNAME_FOR_G}}
+          password: ${{ secrets.TOKEN_FOR_G}}
+
+      - name: Build and push Docker image
+        run: |
+          docker build . -t ghcr.io/${{ secrets.USERNAME_FOR_G }}/nodeapp_test:latest
+          docker push ghcr.io/${{ secrets.USERNAME_FOR_G }}/nodeapp_test:latest
