@@ -23,3 +23,5 @@ jobs:
         run: |
           docker build . -t ghcr.io/${{ secrets.USERNAME_FOR_G }}/nodeapp_test:latest
           docker push ghcr.io/${{ secrets.USERNAME_FOR_G }}/nodeapp_test:latest
+
+#Hello world
